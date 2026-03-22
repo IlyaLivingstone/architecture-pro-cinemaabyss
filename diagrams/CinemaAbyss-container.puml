@@ -1,0 +1,80 @@
+@startuml
+title CinemaAbyss Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User", "A user of the CinemaAbyss system")
+Person(admin, "Administrator", "An administrator managing the system")
+System(CinemaAbyssSystem, "CinemaAbyss System", "System managing smart home devices")
+
+Container_Boundary(CinemaAbyssSystem, "Cinema Abyss System") {
+    Container_Boundary(Security,"Security Domain") {
+        Container(AuthService,"Authenticaton Service","Keycloak","Provides authentication services.")
+    }
+    Container(APIGateway, "API Gateway", "KONG", "Handles user interactions")
+
+    Container_Boundary(BFF,"BFF") {
+        Container(SmartTvBFF, "Smart TV BFF","","Content on smart tv.")
+        Container(WebBFF, "Web BFF","", "Content in web browser")
+        Container(MobileBFF, "Mobile BFF","","Content on mobile app")
+        Container(AdministrationBFF, "Administration BFF","","Content for admin panel")
+    }
+
+    Container(Orchestrator, "Orchestrator","Java Spring Boot application")
+
+    Container_Boundary(SubscriptionDomain,"Subscription Domain") {
+            Container(SubscriptionService, "Subscription Service", "Java Spring Boot application", "Manages subscriptions")
+            ContainerDb(SubscriptionDb, "Subscription Database", "PostgreSQL")
+
+    }
+    Container_Boundary(PaymentDomain,"Payment Domain") {
+        Container(PaymentService, "Payment Service", "Java Spring Boot application", "Processes payments")
+        ContainerDb(PaymentDb, "Payment Database", "PostgreSQL")
+    }
+    Container_Boundary(StreamDomain,"Stream Domain") {
+            Container(StreamService, "Stream Service", "Java Spring Boot application", "Manages streams")
+    }
+    Container_Boundary(MetaDomain,"Meta Data Domain") {
+        Container(UserPreferenceAnalyzer,"User Preference Analyzer","Provides user film rates")
+        Container(RecommendationService,"Recommendation Service","Gets recommendations from external system")
+        Container(MetaDataService,"Meta Data Service","Manages film meta data")
+        Container(Kafka,"Apache Kafka","")
+        ContainerDb(MetaDataDb, "Metadata Database", "PostgreSQL")
+    }
+}
+
+System_Ext(RecommendationSystem, "Recomendation system", "Recommendations")
+System_Ext(OnlineStreamService, "Online Stream Service", "External streaming provider")
+System_Ext(S3, "Object Storage (S3)", "Video Storage")
+
+Rel(user, APIGateway, "Uses the system")
+Rel(admin,APIGateway,"Manages the system")
+Rel(AuthService,APIGateway,"User auth.")
+Rel(APIGateway,SmartTvBFF,"Provides user interactions","REST")
+Rel(APIGateway,MobileBFF,"Provides user interactions","REST")
+Rel(APIGateway,WebBFF,"Provides user interactions","REST")
+Rel(APIGateway,AdministrationBFF,"Provides user interactions","REST")
+
+
+Rel(SmartTvBFF,Orchestrator,"Provides user interactions")
+Rel(MobileBFF,Orchestrator,"Provides user interactions")
+Rel(WebBFF,Orchestrator,"Provides user interactions")
+Rel(AdministrationBFF,Orchestrator,"Provides user interactions")
+
+Rel(Orchestrator,PaymentService,"Provides payment options to users and processes transactions","REST")
+Rel(Orchestrator,StreamService,"Provides streaming content")
+Rel(Orchestrator,SubscriptionService,"Provides subscriptions")
+Rel(Orchestrator,UserPreferenceAnalyzer,"Stores user film ratings and other metrics")
+Rel(Orchestrator,RecommendationService,"Gets recommendations")
+Rel(Orchestrator,MetaDataService,"Provides meta-data")
+Rel(StreamService,OnlineStreamService,"Streams video files from external stream service")
+Rel(StreamService,S3,"Streams videos from external storage")
+Rel(RecommendationService,RecommendationSystem,"Gets recommended films")
+Rel(UserPreferenceAnalyzer,Kafka, "Publishes user preferences analytics event")
+Rel(RecommendationService, Kafka, "Consumes user preferences analytics event")
+
+
+
+@enduml
