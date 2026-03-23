@@ -12,16 +12,16 @@ public class EventConsumer {
 
     @KafkaListener(topics = "movie-events", groupId = "events-group")
     public void consumeMovieEvent(String message) {
-        log.info("🎬 Received movie event: {}", message);
+        log.info("Received movie event: {}", message);
     }
 
     @KafkaListener(topics = "user-events", groupId = "events-group")
     public void consumeUserEvent(String message) {
-        log.info("👤 Received user event: {}", message);
+        log.info("Received user event: {}", message);
     }
 
     @KafkaListener(topics = "payment-events", groupId = "events-group")
     public void consumePaymentEvent(String message) {
-        log.info("💳 Received payment event: {}", message);
+        log.info("Received payment event: {}", message);
     }
 }
