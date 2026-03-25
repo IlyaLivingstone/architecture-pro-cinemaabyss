@@ -29,6 +29,7 @@ spec:
         imagePullPolicy: {{ .Values.moviesService.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.moviesService.service.targetPort }}
+          protocol: TCP
         env:
         - name: PORT
           value: "{{ .Values.moviesService.service.targetPort }}"
@@ -71,6 +72,7 @@ spec:
     app: movies-service
   ports:
   - port: {{ .Values.moviesService.service.port }}
+    protocol: TCP
     targetPort: {{ .Values.moviesService.service.targetPort }}
   type: {{ .Values.moviesService.service.type }}
 {{- end }}

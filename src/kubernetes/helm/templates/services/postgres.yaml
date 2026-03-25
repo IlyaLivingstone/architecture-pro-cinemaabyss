@@ -24,6 +24,7 @@ spec:
         imagePullPolicy: {{ .Values.database.image.pullPolicy }}
         ports:
         - containerPort: 5432
+          protocol: TCP
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -89,5 +90,6 @@ spec:
     app: postgres
   ports:
   - port: {{ .Values.database.port }}
+    protocol: TCP
     targetPort: 5432
   type: ClusterIP
