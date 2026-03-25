@@ -29,6 +29,7 @@ spec:
         imagePullPolicy: {{ .Values.monolith.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.monolith.service.targetPort }}
+          protocol: TCP
         env:
         - name: PORT
           value: "{{ .Values.monolith.service.targetPort }}"
@@ -71,6 +72,7 @@ spec:
     app: monolith
   ports:
   - port: {{ .Values.monolith.service.port }}
+    protocol: TCP
     targetPort: {{ .Values.monolith.service.targetPort }}
   type: {{ .Values.monolith.service.type }}
 {{- end }}

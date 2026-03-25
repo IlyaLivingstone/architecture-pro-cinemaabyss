@@ -13,10 +13,13 @@ spec:
   ports:
   - port: 2181
     name: client
+    protocol: TCP
   - port: 2888
     name: server
+    protocol: TCP
   - port: 3888
     name: leader-election
+    protocol: TCP
   selector:
     app: zookeeper
 ---
@@ -65,10 +68,13 @@ spec:
         ports:
         - containerPort: 2181
           name: client
+          protocol: TCP
         - containerPort: 2888
           name: server
+          protocol: TCP
         - containerPort: 3888
           name: leader-election
+          protocol: TCP
         resources:
           {{- toYaml .Values.zookeeper.resources | nindent 10 }}
         env:
@@ -113,6 +119,7 @@ spec:
   ports:
   - port: 9092
     name: kafka
+    protocol: TCP
   selector:
     app: kafka
 ---
@@ -161,6 +168,7 @@ spec:
         ports:
         - containerPort: 9092
           name: kafka
+          protocol: TCP
         resources:
           {{- toYaml .Values.kafka.resources | nindent 10 }}
         env:
